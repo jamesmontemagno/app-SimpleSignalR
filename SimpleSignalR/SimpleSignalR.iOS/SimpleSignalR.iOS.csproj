@@ -144,7 +144,7 @@
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\SimpleSignalR\SimpleSignalR.csproj">
-      <Project>{BD0DECC9-25AB-4D07-B7CE-40BBB4ECF1E2}</Project>
+      <Project>{58256F2D-4008-4483-A130-AFB234D2785F}</Project>
       <Name>SimpleSignalR</Name>
     </ProjectReference>
   </ItemGroup>

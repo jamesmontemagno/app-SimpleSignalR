@@ -16,6 +16,7 @@ namespace SimpleSignalR.Controllers
         private readonly IItemRepository ItemRepository;
 
         IHubContext<MessagesHub> Hub;
+        Random random = new Random();
         public ItemController(IItemRepository itemRepository, IHubContext<MessagesHub> hub)
         {
             ItemRepository = itemRepository;
@@ -45,6 +46,7 @@ namespace SimpleSignalR.Controllers
                     return BadRequest("Invalid State");
                 }
 
+                item.Description += " " + random.Next(1, 100).ToString();
                 ItemRepository.Add(item);
 
                 await Hub.Clients.All.SendAsync("NewItem", JsonConvert.SerializeObject(item));
