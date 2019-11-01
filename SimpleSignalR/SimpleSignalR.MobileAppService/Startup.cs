@@ -10,6 +10,8 @@ using Swashbuckle.AspNetCore.Swagger;
 using SimpleSignalR.Models;
 using Microsoft.AspNetCore.Mvc;
 using SimpleSignalR.MobileAppService.Hubs;
+using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 
 namespace SimpleSignalR.MobileAppService
 {
@@ -25,24 +27,26 @@ namespace SimpleSignalR.MobileAppService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddControllers();
+            services.AddSignalR();
+
             services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
             {
                 builder.AllowAnyMethod()
                 .AllowAnyHeader()
                 .WithOrigins("http://localhost:5002");
             }));
+
             services.AddSingleton<IItemRepository, ItemRepository>();
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
-            });
-
-            services.AddSignalR();        }
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+            });     
+        }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if(env.IsDevelopment())
             {
@@ -53,7 +57,6 @@ namespace SimpleSignalR.MobileAppService
             {
                 app.UseHsts();
             }
-            app.UseMvc();
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
@@ -61,10 +64,13 @@ namespace SimpleSignalR.MobileAppService
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
 
+            app.UseRouting();
             app.UseCors("CorsPolicy");
-            app.UseSignalR(routes =>
+
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapHub<MessagesHub>("/hubs/messages");
+                endpoints.MapControllers();
+                endpoints.MapHub<MessagesHub>("/hubs/messages");
             });
 
             app.Run(async (context) => await Task.Run(() => context.Response.Redirect("/swagger")));

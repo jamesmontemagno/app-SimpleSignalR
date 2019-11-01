@@ -75,6 +75,7 @@ namespace SimpleSignalR.ViewModels
             }
             catch (Exception ex)
             {
+                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
 
             try

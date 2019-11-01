@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore;
+using Microsoft.Extensions.Hosting;
 
 namespace SimpleSignalR.MobileAppService
 {
@@ -15,17 +16,16 @@ namespace SimpleSignalR.MobileAppService
             CreateWebhostBuilder(args).Build().Run();
         }
 
-        public static IWebHostBuilder CreateWebhostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                   .UseStartup<Startup>()
-                   .ConfigureKestrel((c, o) =>
-                   {
-
-                   })
-                   .ConfigureLogging(logging =>
-                   {
-                       logging.ClearProviders();
-                       logging.AddConsole();
-                   });
-    }
+        public static IHostBuilder CreateWebhostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+            .ConfigureLogging(logging =>
+            {
+                logging.ClearProviders();
+                logging.AddConsole();
+            })
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder.UseStartup<Startup>();
+            });
+    }                   
 }

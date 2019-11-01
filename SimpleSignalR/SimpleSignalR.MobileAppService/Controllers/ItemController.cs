@@ -8,8 +8,9 @@ using SimpleSignalR.Models;
 
 namespace SimpleSignalR.Controllers
 {
-    [Route("api/[controller]")]
+    
     [ApiController]
+    [Route("api/[controller]")]
     public class ItemController : ControllerBase
     {
 
